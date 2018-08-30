@@ -93,8 +93,8 @@ let Template = Template_1 = class Template extends Control.Component {
      */
     bindProperties() {
         Object.defineProperties(this.skeleton, {
-            show: super.bindDescriptor(Template_1.prototype, 'show'),
-            hide: super.bindDescriptor(Template_1.prototype, 'hide')
+            show: super.bindDescriptor(this, Template_1.prototype, 'show'),
+            hide: super.bindDescriptor(this, Template_1.prototype, 'hide')
         });
     }
     /**

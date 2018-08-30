@@ -103,8 +103,8 @@ export class Template extends Control.Component<Properties> {
   @Class.Private()
   private bindProperties(): void {
     Object.defineProperties(this.skeleton, {
-      show: super.bindDescriptor(Template.prototype, 'show'),
-      hide: super.bindDescriptor(Template.prototype, 'hide')
+      show: super.bindDescriptor(this, Template.prototype, 'show'),
+      hide: super.bindDescriptor(this, Template.prototype, 'hide')
     });
   }
 
