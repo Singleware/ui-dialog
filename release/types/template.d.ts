@@ -26,6 +26,10 @@ export declare class Template extends Control.Component<Properties> {
      */
     private dialog;
     /**
+     * Wrapper element.
+     */
+    private wrapper;
+    /**
      * Dialog styles.
      */
     private styles;

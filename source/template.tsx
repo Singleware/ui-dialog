@@ -51,34 +51,43 @@ export class Template extends Control.Component<Properties> {
   ) as HTMLDivElement;
 
   /**
+   * Wrapper element.
+   */
+  @Class.Private()
+  private wrapper: HTMLDivElement = <div class="wrapper" /> as HTMLDivElement;
+
+  /**
    * Dialog styles.
    */
   @Class.Private()
   private styles: HTMLStyleElement = (
     <style>
-      {`:host {
-  position: relative;
-  top: 5%;
-}
-:host > .modal {
+      {`:host > .modal,
+:host > .wrapper {
   display: block;
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
-  height: 100vh;
-  z-index: 999999999;
 }
-:host > .dialog {
+:host > .modal {
+  z-index: 999999999;
+  height: 100vh;
+}
+:host > .wrapper {
+  z-index: 1000000000;
+  max-height: 100vh;
+  overflow: auto;
+}
+:host > .wrapper > .dialog {
   display: flex;
   position: relative;
   flex-direction: column;
   align-items: center;
-  z-index: 1000000000;
 }
-:host > .dialog > .header,
-:host > .dialog > .content,
-:host > .dialog > .footer {
+:host > .wrapper > .dialog > .header,
+:host > .wrapper > .dialog > .content,
+:host > .wrapper > .dialog > .footer {
   display: flex;
   flex-direction: column;
 }`}
@@ -95,7 +104,7 @@ export class Template extends Control.Component<Properties> {
    * Dialog elements.
    */
   @Class.Private()
-  private elements: ShadowRoot = DOM.append(this.skeleton.attachShadow({ mode: 'closed' }), this.styles) as ShadowRoot;
+  private elements: ShadowRoot = DOM.append(this.skeleton.attachShadow({ mode: 'closed' }), this.styles, this.wrapper) as ShadowRoot;
 
   /**
    * Bind exposed properties to the custom element.
@@ -125,9 +134,9 @@ export class Template extends Control.Component<Properties> {
   @Class.Public()
   public show(modal?: boolean): void {
     if (modal) {
-      this.elements.appendChild(this.modalSlot);
+      this.elements.insertBefore(this.modalSlot, this.wrapper);
     }
-    this.elements.appendChild(this.dialog);
+    this.wrapper.appendChild(this.dialog);
   }
 
   /**

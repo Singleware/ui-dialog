@@ -50,31 +50,38 @@ let Template = Template_1 = class Template extends Control.Component {
             this.contentSlot,
             this.footerSlot));
         /**
+         * Wrapper element.
+         */
+        this.wrapper = DOM.create("div", { class: "wrapper" });
+        /**
          * Dialog styles.
          */
-        this.styles = (DOM.create("style", null, `:host {
-  position: relative;
-  top: 5%;
-}
-:host > .modal {
+        this.styles = (DOM.create("style", null, `:host > .modal,
+:host > .wrapper {
   display: block;
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
-  height: 100vh;
-  z-index: 999999999;
 }
-:host > .dialog {
+:host > .modal {
+  z-index: 999999999;
+  height: 100vh;
+}
+:host > .wrapper {
+  z-index: 1000000000;
+  max-height: 100vh;
+  overflow: auto;
+}
+:host > .wrapper > .dialog {
   display: flex;
   position: relative;
   flex-direction: column;
   align-items: center;
-  z-index: 1000000000;
 }
-:host > .dialog > .header,
-:host > .dialog > .content,
-:host > .dialog > .footer {
+:host > .wrapper > .dialog > .header,
+:host > .wrapper > .dialog > .content,
+:host > .wrapper > .dialog > .footer {
   display: flex;
   flex-direction: column;
 }`));
@@ -85,7 +92,7 @@ let Template = Template_1 = class Template extends Control.Component {
         /**
          * Dialog elements.
          */
-        this.elements = DOM.append(this.skeleton.attachShadow({ mode: 'closed' }), this.styles);
+        this.elements = DOM.append(this.skeleton.attachShadow({ mode: 'closed' }), this.styles, this.wrapper);
         this.bindProperties();
     }
     /**
@@ -103,9 +110,9 @@ let Template = Template_1 = class Template extends Control.Component {
      */
     show(modal) {
         if (modal) {
-            this.elements.appendChild(this.modalSlot);
+            this.elements.insertBefore(this.modalSlot, this.wrapper);
         }
-        this.elements.appendChild(this.dialog);
+        this.wrapper.appendChild(this.dialog);
     }
     /**
      * Hide the dialog.
@@ -136,6 +143,9 @@ __decorate([
 __decorate([
     Class.Private()
 ], Template.prototype, "dialog", void 0);
+__decorate([
+    Class.Private()
+], Template.prototype, "wrapper", void 0);
 __decorate([
     Class.Private()
 ], Template.prototype, "styles", void 0);
