@@ -18,31 +18,31 @@ export class Template extends Control.Component<Properties> {
    * Header element.
    */
   @Class.Private()
-  private headerSlot: HTMLSlotElement = <slot name="header" class="header" /> as HTMLSlotElement;
+  private headerSlot = <slot name="header" class="header" /> as HTMLSlotElement;
 
   /**
    * Content element.
    */
   @Class.Private()
-  private contentSlot: HTMLSlotElement = <slot name="content" class="content" /> as HTMLSlotElement;
+  private contentSlot = <slot name="content" class="content" /> as HTMLSlotElement;
 
   /**
    * Footer element.
    */
   @Class.Private()
-  private footerSlot: HTMLSlotElement = <slot name="footer" class="footer" /> as HTMLSlotElement;
+  private footerSlot = <slot name="footer" class="footer" /> as HTMLSlotElement;
 
   /**
    * Modal element.
    */
   @Class.Private()
-  private modalSlot: HTMLSlotElement = <slot name="modal" class="modal" /> as HTMLSlotElement;
+  private modalSlot = <slot name="modal" class="modal" /> as HTMLSlotElement;
 
   /**
    * Dialog element.
    */
   @Class.Private()
-  private dialog: HTMLDivElement = (
+  private dialog = (
     <div class="dialog">
       {this.headerSlot}
       {this.contentSlot}
@@ -54,13 +54,13 @@ export class Template extends Control.Component<Properties> {
    * Wrapper element.
    */
   @Class.Private()
-  private wrapper: HTMLDivElement = <div class="wrapper" /> as HTMLDivElement;
+  private wrapper = <div class="wrapper" /> as HTMLDivElement;
 
   /**
    * Dialog styles.
    */
   @Class.Private()
-  private styles: HTMLStyleElement = (
+  private styles = (
     <style>
       {`:host > .modal,
 :host > .wrapper {
@@ -77,7 +77,7 @@ export class Template extends Control.Component<Properties> {
 :host > .wrapper {
   z-index: 1000000000;
   max-height: 100vh;
-  overflow: auto;
+  overflow-y: auto;
 }
 :host > .wrapper > .dialog {
   display: flex;
@@ -98,13 +98,32 @@ export class Template extends Control.Component<Properties> {
    * Dialog skeleton.
    */
   @Class.Private()
-  private skeleton: Element = <div class={this.properties.class}>{this.children}</div> as Element;
+  private skeleton = <div class={this.properties.class}>{this.children}</div> as Element;
 
   /**
    * Dialog elements.
    */
   @Class.Private()
-  private elements: ShadowRoot = DOM.append(this.skeleton.attachShadow({ mode: 'closed' }), this.styles, this.wrapper) as ShadowRoot;
+  private elements = DOM.append(this.skeleton.attachShadow({ mode: 'closed' }), this.styles, this.wrapper) as ShadowRoot;
+
+  /**
+   * Ignore handler.
+   * @param event Event information.
+   */
+  @Class.Private()
+  private ignoreHandler(event: Event): void {
+    if (this.properties.canIgnore && event.target === this.dialog) {
+      this.hide();
+    }
+  }
+
+  /**
+   * Bind event handlers to update the custom element.
+   */
+  @Class.Private()
+  private bindHandlers(): void {
+    this.wrapper.addEventListener('click', this.ignoreHandler.bind(this));
+  }
 
   /**
    * Bind exposed properties to the custom element.
@@ -124,28 +143,31 @@ export class Template extends Control.Component<Properties> {
    */
   constructor(properties?: Properties, children?: any[]) {
     super(properties, children);
+    this.bindHandlers();
     this.bindProperties();
   }
 
   /**
-   * Show the dialog.
+   * Shows the dialog.
    * @param modal Determines whether the dialog is shown as modal or not.
    */
   @Class.Public()
   public show(modal?: boolean): void {
-    if (modal) {
+    if (modal || this.properties.modal) {
       this.elements.insertBefore(this.modalSlot, this.wrapper);
     }
     this.wrapper.appendChild(this.dialog);
+    this.skeleton.dispatchEvent(new Event('show', { bubbles: true, cancelable: false }));
   }
 
   /**
-   * Hide the dialog.
+   * Hides the dialog.
    */
   @Class.Public()
   public hide(): void {
     this.modalSlot.remove();
     this.dialog.remove();
+    this.skeleton.dispatchEvent(new Event('hide', { bubbles: true, cancelable: false }));
   }
 
   /**

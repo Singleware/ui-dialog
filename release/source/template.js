@@ -71,7 +71,7 @@ let Template = Template_1 = class Template extends Control.Component {
 :host > .wrapper {
   z-index: 1000000000;
   max-height: 100vh;
-  overflow: auto;
+  overflow-y: auto;
 }
 :host > .wrapper > .dialog {
   display: flex;
@@ -93,7 +93,23 @@ let Template = Template_1 = class Template extends Control.Component {
          * Dialog elements.
          */
         this.elements = DOM.append(this.skeleton.attachShadow({ mode: 'closed' }), this.styles, this.wrapper);
+        this.bindHandlers();
         this.bindProperties();
+    }
+    /**
+     * Ignore handler.
+     * @param event Event information.
+     */
+    ignoreHandler(event) {
+        if (this.properties.canIgnore && event.target === this.dialog) {
+            this.hide();
+        }
+    }
+    /**
+     * Bind event handlers to update the custom element.
+     */
+    bindHandlers() {
+        this.wrapper.addEventListener('click', this.ignoreHandler.bind(this));
     }
     /**
      * Bind exposed properties to the custom element.
@@ -105,21 +121,23 @@ let Template = Template_1 = class Template extends Control.Component {
         });
     }
     /**
-     * Show the dialog.
+     * Shows the dialog.
      * @param modal Determines whether the dialog is shown as modal or not.
      */
     show(modal) {
-        if (modal) {
+        if (modal || this.properties.modal) {
             this.elements.insertBefore(this.modalSlot, this.wrapper);
         }
         this.wrapper.appendChild(this.dialog);
+        this.skeleton.dispatchEvent(new Event('show', { bubbles: true, cancelable: false }));
     }
     /**
-     * Hide the dialog.
+     * Hides the dialog.
      */
     hide() {
         this.modalSlot.remove();
         this.dialog.remove();
+        this.skeleton.dispatchEvent(new Event('hide', { bubbles: true, cancelable: false }));
     }
     /**
      * Dialog element.
@@ -155,6 +173,12 @@ __decorate([
 __decorate([
     Class.Private()
 ], Template.prototype, "elements", void 0);
+__decorate([
+    Class.Private()
+], Template.prototype, "ignoreHandler", null);
+__decorate([
+    Class.Private()
+], Template.prototype, "bindHandlers", null);
 __decorate([
     Class.Private()
 ], Template.prototype, "bindProperties", null);

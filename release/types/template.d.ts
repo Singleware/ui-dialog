@@ -42,6 +42,15 @@ export declare class Template extends Control.Component<Properties> {
      */
     private elements;
     /**
+     * Ignore handler.
+     * @param event Event information.
+     */
+    private ignoreHandler;
+    /**
+     * Bind event handlers to update the custom element.
+     */
+    private bindHandlers;
+    /**
      * Bind exposed properties to the custom element.
      */
     private bindProperties;
@@ -52,12 +61,12 @@ export declare class Template extends Control.Component<Properties> {
      */
     constructor(properties?: Properties, children?: any[]);
     /**
-     * Show the dialog.
+     * Shows the dialog.
      * @param modal Determines whether the dialog is shown as modal or not.
      */
     show(modal?: boolean): void;
     /**
-     * Hide the dialog.
+     * Hides the dialog.
      */
     hide(): void;
     /**
