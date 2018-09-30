@@ -6,8 +6,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var Template_1;
-"use strict";
 /**
  * Copyright (C) 2018 Silas B. Domingos
  * This source code is licensed under the MIT License as described in the file LICENSE.
@@ -18,7 +16,7 @@ const Control = require("@singleware/ui-control");
 /**
  * Dialog template class.
  */
-let Template = Template_1 = class Template extends Control.Component {
+let Template = class Template extends Control.Component {
     /**
      * Default constructor.
      * @param properties Dialog properties.
@@ -115,10 +113,7 @@ let Template = Template_1 = class Template extends Control.Component {
      * Bind exposed properties to the custom element.
      */
     bindProperties() {
-        Object.defineProperties(this.skeleton, {
-            show: super.bindDescriptor(this, Template_1.prototype, 'show'),
-            hide: super.bindDescriptor(this, Template_1.prototype, 'hide')
-        });
+        this.bindComponentProperties(this.skeleton, ['show', 'hide']);
     }
     /**
      * Shows the dialog.
@@ -191,7 +186,7 @@ __decorate([
 __decorate([
     Class.Public()
 ], Template.prototype, "element", null);
-Template = Template_1 = __decorate([
+Template = __decorate([
     Class.Describe()
 ], Template);
 exports.Template = Template;
