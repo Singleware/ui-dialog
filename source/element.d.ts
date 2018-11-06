@@ -16,4 +16,9 @@ export interface Element extends HTMLDivElement {
    * Hide the dialog.
    */
   hide(): void;
+  /**
+   * Wait the dialog confirmation.
+   * @returns Returns a promise to get true when the action was successful, false otherwise.
+   */
+  wait(): Promise<boolean>;
 }

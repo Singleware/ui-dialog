@@ -6,6 +6,10 @@ import { Element } from './element';
  */
 export declare class Template extends Control.Component<Properties> {
     /**
+     * Confirmation callback.
+     */
+    private confirmation?;
+    /**
      * Header element.
      */
     private headerSlot;
@@ -55,11 +59,23 @@ export declare class Template extends Control.Component<Properties> {
      */
     private bindProperties;
     /**
+     * Confirm the dialog with success status.
+     */
+    protected success(): Promise<void>;
+    /**
+     * Confirm the dialog with failure status.
+     */
+    protected failure(): Promise<void>;
+    /**
      * Default constructor.
      * @param properties Dialog properties.
      * @param children Dialog children.
      */
     constructor(properties?: Properties, children?: any[]);
+    /**
+     * Dialog element.
+     */
+    readonly element: Element;
     /**
      * Shows the dialog.
      * @param modal Determines whether the dialog is shown as modal or not.
@@ -70,7 +86,8 @@ export declare class Template extends Control.Component<Properties> {
      */
     hide(): void;
     /**
-     * Dialog element.
+     * Wait the dialog confirmation.
+     * @returns Returns a promise to get true when the action was successful, false otherwise.
      */
-    readonly element: Element;
+    wait(): Promise<boolean>;
 }

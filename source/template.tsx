@@ -15,6 +15,12 @@ import { Element } from './element';
 @Class.Describe()
 export class Template extends Control.Component<Properties> {
   /**
+   * Confirmation callback.
+   */
+  @Class.Private()
+  private confirmation?: Class.Callable;
+
+  /**
    * Header element.
    */
   @Class.Private()
@@ -130,7 +136,29 @@ export class Template extends Control.Component<Properties> {
    */
   @Class.Private()
   private bindProperties(): void {
-    this.bindComponentProperties(this.skeleton, ['show', 'hide']);
+    this.bindComponentProperties(this.skeleton, ['show', 'hide', 'wait']);
+  }
+
+  /**
+   * Confirm the dialog with success status.
+   */
+  @Class.Protected()
+  protected async success(): Promise<void> {
+    if (this.confirmation) {
+      this.confirmation(true);
+      this.skeleton.dispatchEvent(new Event('success', { bubbles: true, cancelable: false }));
+    }
+  }
+
+  /**
+   * Confirm the dialog with failure status.
+   */
+  @Class.Protected()
+  protected async failure(): Promise<void> {
+    if (this.confirmation) {
+      this.confirmation(false);
+      this.skeleton.dispatchEvent(new Event('failure', { bubbles: true, cancelable: false }));
+    }
   }
 
   /**
@@ -142,6 +170,14 @@ export class Template extends Control.Component<Properties> {
     super(properties, children);
     this.bindHandlers();
     this.bindProperties();
+  }
+
+  /**
+   * Dialog element.
+   */
+  @Class.Public()
+  public get element(): Element {
+    return this.skeleton;
   }
 
   /**
@@ -168,10 +204,13 @@ export class Template extends Control.Component<Properties> {
   }
 
   /**
-   * Dialog element.
+   * Wait the dialog confirmation.
+   * @returns Returns a promise to get true when the action was successful, false otherwise.
    */
   @Class.Public()
-  public get element(): Element {
-    return this.skeleton;
+  public async wait(): Promise<boolean> {
+    return new Promise((resolve: Class.Callable, reject: Class.Callable) => {
+      this.confirmation = resolve;
+    });
   }
 }

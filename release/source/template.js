@@ -113,7 +113,31 @@ let Template = class Template extends Control.Component {
      * Bind exposed properties to the custom element.
      */
     bindProperties() {
-        this.bindComponentProperties(this.skeleton, ['show', 'hide']);
+        this.bindComponentProperties(this.skeleton, ['show', 'hide', 'wait']);
+    }
+    /**
+     * Confirm the dialog with success status.
+     */
+    async success() {
+        if (this.confirmation) {
+            this.confirmation(true);
+            this.skeleton.dispatchEvent(new Event('success', { bubbles: true, cancelable: false }));
+        }
+    }
+    /**
+     * Confirm the dialog with failure status.
+     */
+    async failure() {
+        if (this.confirmation) {
+            this.confirmation(false);
+            this.skeleton.dispatchEvent(new Event('failure', { bubbles: true, cancelable: false }));
+        }
+    }
+    /**
+     * Dialog element.
+     */
+    get element() {
+        return this.skeleton;
     }
     /**
      * Shows the dialog.
@@ -135,12 +159,18 @@ let Template = class Template extends Control.Component {
         this.skeleton.dispatchEvent(new Event('hide', { bubbles: true, cancelable: false }));
     }
     /**
-     * Dialog element.
+     * Wait the dialog confirmation.
+     * @returns Returns a promise to get true when the action was successful, false otherwise.
      */
-    get element() {
-        return this.skeleton;
+    async wait() {
+        return new Promise((resolve, reject) => {
+            this.confirmation = resolve;
+        });
     }
 };
+__decorate([
+    Class.Private()
+], Template.prototype, "confirmation", void 0);
 __decorate([
     Class.Private()
 ], Template.prototype, "headerSlot", void 0);
@@ -178,6 +208,15 @@ __decorate([
     Class.Private()
 ], Template.prototype, "bindProperties", null);
 __decorate([
+    Class.Protected()
+], Template.prototype, "success", null);
+__decorate([
+    Class.Protected()
+], Template.prototype, "failure", null);
+__decorate([
+    Class.Public()
+], Template.prototype, "element", null);
+__decorate([
     Class.Public()
 ], Template.prototype, "show", null);
 __decorate([
@@ -185,7 +224,7 @@ __decorate([
 ], Template.prototype, "hide", null);
 __decorate([
     Class.Public()
-], Template.prototype, "element", null);
+], Template.prototype, "wait", null);
 Template = __decorate([
     Class.Describe()
 ], Template);
