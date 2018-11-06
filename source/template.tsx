@@ -13,7 +13,7 @@ import { Element } from './element';
  * Dialog template class.
  */
 @Class.Describe()
-export class Template extends Control.Component<Properties> {
+export class Template<T extends Properties = Properties> extends Control.Component<T> {
   /**
    * Confirmation callback.
    */
@@ -166,7 +166,7 @@ export class Template extends Control.Component<Properties> {
    * @param properties Dialog properties.
    * @param children Dialog children.
    */
-  constructor(properties?: Properties, children?: any[]) {
+  constructor(properties?: T, children?: any[]) {
     super(properties, children);
     this.bindHandlers();
     this.bindProperties();
