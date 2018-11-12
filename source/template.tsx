@@ -80,10 +80,10 @@ export class Template<T extends Properties = Properties> extends Control.Compone
   z-index: 999999999;
   height: 100vh;
 }
-:host > .wrapper {
+:host > .wrapper:not(:empty) {
   z-index: 1000000000;
-  max-height: 100vh;
-  overflow-y: auto;
+  overflow: auto;
+  height: 100vh;
 }
 :host > .wrapper > .dialog {
   display: flex;
